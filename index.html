@@ -168,15 +168,7 @@ tr:hover td{background:var(--g0)}
       </div>
       <button class="btn bp" id="btn-login" onclick="fazerLogin()" style="width:100%;justify-content:center;padding:10px">Entrar</button>
     </div>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bo)">
-      <div class="fg"><label>URL do Google Apps Script</label>
-        <div class="url-row">
-          <input id="l-url" type="text" placeholder="https://script.google.com/macros/s/.../exec"/>
-          <button class="btn bs bsm" onclick="salvarUrlLogin()">Salvar</button>
-        </div>
-      </div>
-      <p style="font-size:11px;color:var(--t2);margin-top:8px">Configure uma vez. A URL fica salva neste navegador.</p>
-    </div>
+
   </div>
 </div>
 
@@ -283,10 +275,11 @@ tr:hover td{background:var(--g0)}
           <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bo)">
             <p style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:12px">Cotas por cargo</p>
             <div class="fgrid">
-              <div class="fg"><label>Inspetor de Polícia Penal</label><input id="cf-c1" type="number" min="0"/></div>
-              <div class="fg"><label>Agente Penitenciário Temporário</label><input id="cf-c2" type="number" min="0"/></div>
-              <div class="fg"><label>Auxiliar de Segurança Penitenciário</label><input id="cf-c3" type="number" min="0"/></div>
+              <div class="fg"><label>Inspetor de Polícia Penal</label><input id="cf-c1" type="number" min="0" readonly style="background:var(--g1)"/></div>
+              <div class="fg"><label>Agente Penitenciário Temporário</label><input id="cf-c2" type="number" min="0" readonly style="background:var(--g1)"/></div>
+              <div class="fg"><label>Auxiliar de Segurança Penitenciário</label><input id="cf-c3" type="number" min="0" readonly style="background:var(--g1)"/></div>
             </div>
+            <p style="font-size:11px;color:var(--t2);margin-top:8px">Cotas definidas pelo planejamento GESPEN/SAMOD. Não editáveis pelo EP.</p>
           </div>
           <div class="fa"><button class="btn bp" onclick="salvarCfg()">Salvar alterações</button></div>
         </div>
@@ -301,7 +294,7 @@ tr:hover td{background:var(--g0)}
         </div>
         <div class="fsec">
           <h3>Google Sheets</h3>
-          <p style="font-size:12px;color:var(--t2);margin-bottom:12px">URL configurada na tela de login. Para alterar, faça logout e edite no login.</p>
+          <p style="font-size:12px;color:var(--t2);margin-bottom:12px">A URL do Apps Script está configurada diretamente no sistema pelo administrador técnico.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn bg2" onclick="sincronizar()">Sincronizar agora</button>
             <button class="btn bs bsm" onclick="testarConexao()">Testar conexão</button>
@@ -392,6 +385,62 @@ tr:hover td{background:var(--g0)}
 // ══════════════════════════════════════════════════════════════
 const CARGOS={'Inspetor de Polícia Penal':691.10,'Agente Penitenciário Temporário':291.57,'Auxiliar de Segurança Penitenciário':145.79};
 const CHAVES=['Inspetor de Polícia Penal','Agente Penitenciário Temporário','Auxiliar de Segurança Penitenciário'];
+
+const EPS_CADASTRADOS = [
+  {nome:"CAAE de São Luís",codigo:"CAAE-SL",c1:8,c2:0,c3:11},
+  {nome:"COCT de São Luís",codigo:"COCT-SL",c1:2,c2:20,c3:20},
+  {nome:"Grupo Especial de Operação Penitenciárias - GEOP",codigo:"GEOP",c1:37,c2:0,c3:0},
+  {nome:"Grupo Tático de Escolta - GTE",codigo:"GTE",c1:23,c2:70,c3:14},
+  {nome:"Penitenciária Regional de Bacabal",codigo:"PR-BACABAL",c1:8,c2:29,c3:49},
+  {nome:"Penitenciária Regional de Brejo",codigo:"PR-BREJO",c1:5,c2:32,c3:40},
+  {nome:"Penitenciária Regional de Governador Nunes Freire",codigo:"PR-GNF",c1:1,c2:34,c3:40},
+  {nome:"Penitenciária Regional de Imperatriz",codigo:"PR-IMP",c1:17,c2:14,c3:49},
+  {nome:"Penitenciária Regional de Pedreiras",codigo:"PR-PED",c1:8,c2:23,c3:45},
+  {nome:"Penitenciária Regional de Pinheiro",codigo:"PR-PINH",c1:1,c2:33,c3:57},
+  {nome:"Penitenciária Regional de São Luís",codigo:"PR-SL",c1:2,c2:51,c3:51},
+  {nome:"Penitenciária Regional de Timon",codigo:"PR-TIMON",c1:30,c2:13,c3:47},
+  {nome:"Supervisão de Segurança Interna - SSI",codigo:"SSI",c1:12,c2:360,c3:297},
+  {nome:"UPR de Açailândia",codigo:"UPR-ACA",c1:1,c2:19,c3:39},
+  {nome:"UPR de Balsas",codigo:"UPR-BAL",c1:0,c2:18,c3:32},
+  {nome:"UPR de Barra do Corda",codigo:"UPR-BDC",c1:2,c2:10,c3:16},
+  {nome:"UPR de Caxias",codigo:"UPR-CAX",c1:16,c2:7,c3:43},
+  {nome:"UPR de Chapadinha",codigo:"UPR-CHA",c1:8,c2:16,c3:39},
+  {nome:"UPR de Codó",codigo:"UPR-COD",c1:7,c2:11,c3:38},
+  {nome:"UPR de Colinas",codigo:"UPR-COL",c1:0,c2:17,c3:21},
+  {nome:"UPR de Coroatá",codigo:"UPR-COR",c1:6,c2:21,c3:42},
+  {nome:"UPR de Davinópolis",codigo:"UPR-DAV",c1:8,c2:4,c3:29},
+  {nome:"UPR de Godofredo Viana",codigo:"UPR-GOD",c1:1,c2:9,c3:20},
+  {nome:"UPR de Grajaú",codigo:"UPR-GRA",c1:1,c2:8,c3:17},
+  {nome:"UPR de Imperatriz",codigo:"UPR-IMP",c1:5,c2:30,c3:54},
+  {nome:"UPR de Itapecuru-Mirim",codigo:"UPR-ITA",c1:2,c2:12,c3:31},
+  {nome:"UPR de Pinheiro",codigo:"UPR-PINH",c1:1,c2:33,c3:57},
+  {nome:"UPR de Porto Franco",codigo:"UPR-PF",c1:3,c2:8,c3:19},
+  {nome:"UPR de Presidente Dutra",codigo:"UPR-PDU",c1:2,c2:9,c3:18},
+  {nome:"UPR de Rosário",codigo:"UPR-ROS",c1:7,c2:8,c3:29},
+  {nome:"UPR de Santa Inês",codigo:"UPR-SI",c1:3,c2:17,c3:32},
+  {nome:"UPR de São João dos Patos",codigo:"UPR-SJP",c1:4,c2:6,c3:19},
+  {nome:"UPR de São Luís 1",codigo:"UPR-SL1",c1:6,c2:32,c3:38},
+  {nome:"UPR de São Luís 2",codigo:"UPR-SL2",c1:0,c2:46,c3:53},
+  {nome:"UPR de São Luís 3",codigo:"UPR-SL3",c1:1,c2:31,c3:29},
+  {nome:"UPR de São Luís 4",codigo:"UPR-SL4",c1:5,c2:38,c3:15},
+  {nome:"UPR de São Luís 5",codigo:"UPR-SL5",c1:3,c2:31,c3:18},
+  {nome:"UPR de São Luís 6",codigo:"UPR-SL6",c1:0,c2:36,c3:36},
+  {nome:"UPR de São Luís 7",codigo:"UPR-SL7",c1:0,c2:20,c3:42},
+  {nome:"UPR de Segurança Máxima",codigo:"UPR-SM",c1:2,c2:50,c3:42},
+  {nome:"UPR de Timon",codigo:"UPR-TIM",c1:24,c2:12,c3:41},
+  {nome:"UPR de Viana",codigo:"UPR-VIA",c1:2,c2:12,c3:31},
+  {nome:"UPR de Zé Doca",codigo:"UPR-ZD",c1:1,c2:10,c3:26},
+  {nome:"UPR do Anil",codigo:"UPR-ANIL",c1:18,c2:8,c3:22},
+  {nome:"UPR do Monte Castelo",codigo:"UPR-MC",c1:14,c2:5,c3:17},
+  {nome:"UPR do Olho D'Água",codigo:"UPR-ODA",c1:19,c2:18,c3:31},
+  {nome:"UPR do Paço do Lumiar",codigo:"UPR-PDL",c1:13,c2:0,c3:17},
+  {nome:"UPR Feminina",codigo:"UPR-FEM",c1:7,c2:25,c3:57},
+  {nome:"UPRS Feminina de Carolina",codigo:"UPR-FCA",c1:0,c2:8,c3:18},
+  {nome:"UPRS Feminina de Timon",codigo:"UPR-FTI",c1:6,c2:4,c3:17},
+];
+
+function epPorCodigo(cod){return EPS_CADASTRADOS.find(e=>e.codigo===cod)||null;}
+
 const LS_KEY='gespen_v4';
 
 let DB={config:null,servidores:[],plantoes:[],decisoes:{}};
@@ -401,7 +450,7 @@ let adminDadosCache={};
 
 function lerLS(){const s=localStorage.getItem(LS_KEY);if(s)DB=JSON.parse(s);}
 function salvarLS(){localStorage.setItem(LS_KEY,JSON.stringify(DB));}
-function getUrl(){return localStorage.getItem('gespen_gs_url')||'';}
+function getUrl(){return 'https://script.google.com/macros/s/AKfycbyBXQZAGTyORLnRRGj2QA5b3r-uKx3aH4ah8a5pcLa8LULHuCc_ru8ZWn2w1YGO1tBo/exec';}
 
 // ══════════════════════════════════════════════════════════════
 //  UTILITÁRIOS
@@ -432,18 +481,11 @@ async function apiLer(dados){
 //  LOGIN / LOGOUT
 // ══════════════════════════════════════════════════════════════
 window.addEventListener('load',()=>{
-  const url=getUrl();
-  if(url)document.getElementById('l-url').value=url;
   lerLS();
   const sessRaw=sessionStorage.getItem('gespen_sess');
   if(sessRaw){SESS=JSON.parse(sessRaw);entrar();}
 });
 
-function salvarUrlLogin(){
-  const url=document.getElementById('l-url').value.trim();
-  if(!url){toast('Informe a URL.','er');return;}
-  localStorage.setItem('gespen_gs_url',url);toast('URL salva.');
-}
 
 async function fazerLogin(){
   const usr=document.getElementById('l-usr').value.trim();
@@ -464,9 +506,1003 @@ async function fazerLogin(){
       SESS={usuario:d.usuario,perfil:d.perfil,epCodigo:d.epCodigo,epNome:d.epNome,token:d.token};
       sessionStorage.setItem('gespen_sess',JSON.stringify(SESS));
       // Se EP, garante config local
-      if(SESS.perfil==='ep'&&!DB.config){
-        DB.config={nome:d.epNome,codigo:d.epCodigo,pf:21,c1:0,c2:0,c3:0,periodo:''};
-        salvarLS();
+      if(SESS.perfil==='ep'){
+        const epInfo=epPorCodigo(d.epCodigo);
+        if(!DB.config){
+          DB.config={
+            nome:d.epNome,codigo:d.epCodigo,pf:21,periodo:'',
+            c1:epInfo?epInfo.c1:0,
+            c2:epInfo?epInfo.c2:0,
+            c3:epInfo?epInfo.c3:0
+          };
+          salvarLS();
+        } else if(epInfo){
+          // Atualiza cotas sempre que fizer login (garante dados atualizados)
+          DB.config.c1=epInfo.c1;DB.config.c2=epInfo.c2;DB.config.c3=epInfo.c3;
+          DB.config.nome=d.epNome;DB.config.codigo=d.epCodigo;
+          salvarLS();
+        }
+      }
+      entrar();
+    }
+  }catch(e){err.textContent='Erro de conexão: '+e.message;err.classList.add('show');}
+  btn.textContent='Entrar';btn.disabled=false;
+}
+
+document.getElementById('l-pwd').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
+document.getElementById('l-usr').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('l-pwd').focus();});
+
+function entrar(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('sb-usr').textContent=SESS.usuario;
+  document.getElementById('sb-ep').textContent=SESS.perfil==='admin'?'Gestão Central — SEAP-MA':(SESS.epNome||SESS.epCodigo||'—');
+  const pb=document.getElementById('sb-perfil-badge');
+  pb.textContent=SESS.perfil==='admin'?'Admin':'EP';
+  pb.className='perfil-badge perfil-'+(SESS.perfil==='admin'?'admin':'ep');
+  construirMenu();
+  document.getElementById('btn-sync').style.display=SESS.perfil==='ep'?'flex':'none';
+  if(SESS.perfil==='ep')nav('dashboard');
+  else nav('admin-painel');
+}
+
+function logout(){
+  sessionStorage.removeItem('gespen_sess');
+  SESS={};document.getElementById('app').classList.remove('show');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('l-pwd').value='';
+}
+
+function construirMenu(){
+  const nav=document.getElementById('sb-nav');
+  const isAdmin=SESS.perfil==='admin';
+  if(isAdmin){
+    nav.innerHTML=`
+      <div class="ni-sep">Visão geral</div>
+      <button class="ni active" onclick="nav('admin-painel')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Painel geral</button>
+      <div class="ni-sep">Administração</div>
+      <button class="ni" onclick="nav('admin-usuarios')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Usuários</button>
+      <button class="ni" onclick="nav('config')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</button>`;
+  }else{
+    nav.innerHTML=`
+      <button class="ni active" onclick="nav('dashboard')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
+      <button class="ni" onclick="nav('servidores')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Servidores</button>
+      <button class="ni" onclick="nav('plantoes')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Plantões</button>
+      <button class="ni" onclick="nav('folgas')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Folgas e decisão</button>
+      <button class="ni" onclick="nav('cotas')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Cotas</button>
+      <button class="ni" onclick="nav('config')"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</button>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  NAVEGAÇÃO
+// ══════════════════════════════════════════════════════════════
+function nav(t){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const sc=document.getElementById('screen-'+t);if(sc)sc.classList.add('active');
+  const tts={'dashboard':'Dashboard','servidores':'Servidores','plantoes':'Plantões','folgas':'Folgas e decisão','cotas':'Cotas','admin-painel':'Painel geral','admin-usuarios':'Usuários','config':'Configurações'};
+  document.getElementById('tb-title').textContent=tts[t]||t;
+  // Ativa botão do menu
+  document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+t+"'"))n.classList.add('active');});
+  if(t==='dashboard')renderDash();
+  if(t==='servidores')renderSrv();
+  if(t==='plantoes')renderPlt();
+  if(t==='folgas')renderFol();
+  if(t==='cotas')renderCotas();
+  if(t==='admin-painel')carregarAdminDados();
+  if(t==='admin-usuarios')carregarUsuarios();
+  if(t==='config')renderCfg();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  LÓGICA DE NEGÓCIO (EP)
+// ══════════════════════════════════════════════════════════════
+function getPF(){return parseInt((DB.config||{}).pf)||21;}
+function getCota(c){const m=DB.config||{};const k={'Inspetor de Polícia Penal':'c1','Agente Penitenciário Temporário':'c2','Auxiliar de Segurança Penitenciário':'c3'};return parseInt(m[k[c]])||0;}
+function plantoes(m){return DB.plantoes.filter(p=>p.matr===m).reduce((s,p)=>s+p.qtd,0);}
+function folgas(m){return Math.floor(plantoes(m)/getPF());}
+function dec(m){return DB.decisoes[m]||{decisao:'Aguardando decisão',data:'',just:''};}
+function valor(m){const s=DB.servidores.find(x=>x.matr===m);if(!s)return 0;return folgas(m)*(CARGOS[s.cargo]||0);}
+function validados(c){return DB.servidores.filter(s=>s.cargo===c&&status(s.matr)==='Validado para folha').length;}
+function status(m){
+  const f=folgas(m);if(f<1)return'Sem direito adquirido';
+  const d=dec(m);
+  if(d.decisao==='Não comprar')return'Não comprar';
+  if(!d.decisao||d.decisao==='Aguardando decisão')return'Aguardando decisão';
+  if(!d.data||!d.just)return'Pendência: data/justificativa';
+  const s=DB.servidores.find(x=>x.matr===m);
+  const co=getCota(s?s.cargo:'');
+  if(co>0&&validados(s?s.cargo:'')>co)return'Aguardando disponibilidade de cota';
+  return'Validado para folha';
+}
+function badge(s){
+  const m={'Validado para folha':'bve','Sem direito adquirido':'bcz','Não comprar':'bcz','Aguardando decisão':'bam','Aguardando disponibilidade de cota':'bam','Pendência: data/justificativa':'bre'};
+  return`<span class="badge ${m[s]||'bcz'}">${s}</span>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════════════════
+function renderDash(){
+  const tp=DB.plantoes.reduce((s,p)=>s+p.qtd,0);
+  const tf=DB.servidores.reduce((s,x)=>s+folgas(x.matr),0);
+  const ag=DB.servidores.filter(s=>status(s.matr)==='Aguardando decisão').length;
+  const vl=DB.servidores.filter(s=>status(s.matr)==='Validado para folha').length;
+  const vt=DB.servidores.filter(s=>status(s.matr)==='Validado para folha').reduce((t,s)=>t+valor(s.matr),0);
+  document.getElementById('kpi-grid').innerHTML=`
+    <div class="kpi"><div class="kpi-lbl">Servidores</div><div class="kpi-val">${DB.servidores.length}</div><div class="kpi-sub">cadastrados</div></div>
+    <div class="kpi"><div class="kpi-lbl">Plantões</div><div class="kpi-val">${tp}</div><div class="kpi-sub">registrados</div></div>
+    <div class="kpi ve"><div class="kpi-lbl">Folgas adquiridas</div><div class="kpi-val">${tf}</div><div class="kpi-sub">total</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Aguardando</div><div class="kpi-val">${ag}</div><div class="kpi-sub">sem decisão</div></div>
+    <div class="kpi ve"><div class="kpi-lbl">Autorizadas</div><div class="kpi-val">${vl}</div><div class="kpi-sub">validadas</div></div>
+    <div class="kpi"><div class="kpi-lbl">Valor total</div><div class="kpi-val" style="font-size:16px">R$ ${vt.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div class="kpi-sub">autorizadas</div></div>`;
+  cotasWidget('dash-cotas');
+  const sit={'Aguardando decisão':0,'Validado para folha':0,'Não comprar':0,'Sem direito adquirido':0,'Pendência: data/justificativa':0,'Aguardando disponibilidade de cota':0};
+  DB.servidores.forEach(s=>{const st=status(s.matr);if(st in sit)sit[st]++;});
+  const rows=Object.entries(sit).filter(([,v])=>v>0).map(([k,v])=>`<tr><td>${badge(k)}</td><td style="text-align:right;font-weight:500">${v}</td></tr>`).join('');
+  document.getElementById('dash-sit').innerHTML=`<table><thead><tr><th>Status</th><th style="text-align:right">Qtd</th></tr></thead><tbody>${rows||'<tr><td colspan="2" style="text-align:center;color:var(--t2);padding:20px">Nenhum servidor</td></tr>'}</tbody></table>`;
+}
+function cotasWidget(id){
+  document.getElementById(id).innerHTML=CHAVES.map(c=>{
+    const co=getCota(c),us=DB.servidores.filter(s=>s.cargo===c&&status(s.matr)==='Validado para folha').length;
+    const pct=co>0?Math.min(100,Math.round(us/co*100)):0;
+    const cor=pct>=100?'var(--re)':pct>=80?'var(--am)':'var(--ve)';
+    const sc=pct>=100?'bre':pct>=80?'bam':'bve';
+    return`<div class="cc"><div class="cc-hd"><div class="cc-nm">${c}</div><div class="cc-ns">${us}/${co}</div></div><div class="cb-bg"><div class="cb" style="width:${pct}%;background:${cor}"></div></div><div class="cc-st badge ${sc}" style="margin-top:6px">${pct>=100?'Cota esgotada':pct>=80?'Próxima do limite':'Disponível'}</div></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SERVIDORES
+// ══════════════════════════════════════════════════════════════
+function renderSrv(){
+  const q=(document.getElementById('srv-q')||{}).value||'';
+  const list=DB.servidores.filter(s=>!q||s.matr.includes(q)||s.nome.toLowerCase().includes(q.toLowerCase()));
+  const el=document.getElementById('srv-tb');
+  if(!list.length){el.innerHTML=`<tr><td colspan="7"><div class="empty"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><h4>Nenhum servidor cadastrado</h4><p>Clique em "Adicionar".</p></div></td></tr>`;return;}
+  el.innerHTML=list.map(s=>`<tr><td style="font-weight:500">${s.matr}</td><td>${s.nome}</td><td style="font-size:11px">${s.cargo}</td><td><span class="badge bve">Ativo</span></td><td>${plantoes(s.matr)}</td><td><strong>${folgas(s.matr)}</strong></td><td style="white-space:nowrap"><button class="btn bs bsm" onclick="abrirSrv('${s.matr}')">Editar</button> <button class="btn bd bsm" onclick="excluirSrv('${s.matr}')">Excluir</button></td></tr>`).join('');
+}
+function abrirSrv(m){
+  editSrv=m||null;
+  document.getElementById('m-srv-t').textContent=m?'Editar servidor':'Adicionar servidor';
+  if(m){const s=DB.servidores.find(x=>x.matr===m);document.getElementById('s-mt').value=s.matr;document.getElementById('s-mt').disabled=true;document.getElementById('s-nm').value=s.nome;document.getElementById('s-cr').value=s.cargo;}
+  else{document.getElementById('s-mt').value='';document.getElementById('s-mt').disabled=false;document.getElementById('s-nm').value='';document.getElementById('s-cr').value='';}
+  document.getElementById('m-srv').classList.add('open');
+}
+function salvarSrv(){
+  const matr=document.getElementById('s-mt').value.trim(),nome=document.getElementById('s-nm').value.trim(),cargo=document.getElementById('s-cr').value;
+  if(!matr||!nome||!cargo){toast('Preencha todos os campos.','er');return;}
+  if(!editSrv&&DB.servidores.find(s=>s.matr===matr)){toast('Matrícula já cadastrada.','er');return;}
+  if(editSrv){const i=DB.servidores.findIndex(s=>s.matr===editSrv);DB.servidores[i]={matr,nome,cargo};}
+  else DB.servidores.push({matr,nome,cargo});
+  salvarLS();fechar('m-srv');renderSrv();toast(editSrv?'Servidor atualizado.':'Servidor cadastrado.');
+}
+function excluirSrv(m){
+  if(!confirm('Excluir este servidor e todos seus registros?'))return;
+  DB.servidores=DB.servidores.filter(s=>s.matr!==m);
+  DB.plantoes=DB.plantoes.filter(p=>p.matr!==m);
+  delete DB.decisoes[m];
+  salvarLS();renderSrv();toast('Servidor removido.');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PLANTÕES
+// ══════════════════════════════════════════════════════════════
+function renderPlt(){
+  const q=(document.getElementById('plt-q')||{}).value||'';
+  const list=DB.plantoes.filter(p=>{if(!q)return true;const s=DB.servidores.find(x=>x.matr===p.matr);return p.matr.includes(q)||(s&&s.nome.toLowerCase().includes(q.toLowerCase()));});
+  const el=document.getElementById('plt-tb');
+  if(!list.length){el.innerHTML=`<tr><td colspan="7"><div class="empty"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><h4>Nenhum plantão registrado</h4><p>Clique em "Registrar".</p></div></td></tr>`;return;}
+  el.innerHTML=list.map((p,i)=>{const s=DB.servidores.find(x=>x.matr===p.matr);return`<tr><td style="font-weight:500">${p.matr}</td><td>${s?s.nome:'—'}</td><td style="font-size:11px">${s?s.cargo:'—'}</td><td>${p.periodo||'—'}</td><td>${p.qtd}</td><td><strong>${Math.floor(p.qtd/getPF())}</strong></td><td><button class="btn bd bsm" onclick="excluirPlt(${i})">Excluir</button></td></tr>`;}).join('');
+}
+function abrirPlt(){
+  const sel=document.getElementById('p-sv');
+  sel.innerHTML='<option value="">Selecionar servidor</option>'+DB.servidores.map(s=>`<option value="${s.matr}">${s.matr} — ${s.nome}</option>`).join('');
+  document.getElementById('p-qt').value='';
+  document.getElementById('p-pr').value=(DB.config||{}).periodo||'';
+  document.getElementById('p-pv').style.display='none';
+  document.getElementById('m-plt').classList.add('open');
+}
+function prevF(){const q=parseInt(document.getElementById('p-qt').value)||0;document.getElementById('p-fp').textContent=Math.floor(q/getPF());document.getElementById('p-pv').style.display=q>0?'block':'none';}
+function salvarPlt(){
+  const matr=document.getElementById('p-sv').value,qtd=parseInt(document.getElementById('p-qt').value)||0,periodo=document.getElementById('p-pr').value.trim();
+  if(!matr){toast('Selecione um servidor.','er');return;}if(qtd<1){toast('Informe a quantidade.','er');return;}
+  DB.plantoes.push({matr,qtd,periodo});salvarLS();fechar('m-plt');renderPlt();toast('Plantões registrados.');
+}
+function excluirPlt(i){if(!confirm('Excluir?'))return;DB.plantoes.splice(i,1);salvarLS();renderPlt();toast('Removido.');}
+
+// ══════════════════════════════════════════════════════════════
+//  FOLGAS
+// ══════════════════════════════════════════════════════════════
+function renderFol(){
+  const q=(document.getElementById('fol-q')||{}).value||'';
+  const list=DB.servidores.filter(s=>!q||s.matr.includes(q)||s.nome.toLowerCase().includes(q.toLowerCase()));
+  const el=document.getElementById('fol-tb');
+  if(!list.length){el.innerHTML=`<tr><td colspan="10"><div class="empty"><h4>Nenhum servidor cadastrado</h4></div></td></tr>`;return;}
+  el.innerHTML=list.map(s=>{const f=folgas(s.matr),p=plantoes(s.matr),d=dec(s.matr),st=status(s.matr);
+    return`<tr><td style="font-weight:500">${s.matr}</td><td>${s.nome}</td><td style="font-size:11px">${s.cargo}</td><td>${p}</td><td><strong>${f}</strong></td><td><span class="badge ${f>=1?'bve':'bcz'}">${f>=1?'Apto':'Não apto'}</span></td><td style="font-size:11px">${d.data||'—'}</td><td style="font-size:11px">${d.decisao||'—'}</td><td>${badge(st)}</td><td><button class="btn bs bsm" onclick="abrirDec('${s.matr}')" ${f<1?'disabled':''}>Decidir</button></td></tr>`;}).join('');
+}
+function abrirDec(m){
+  editFol=m;const s=DB.servidores.find(x=>x.matr===m);const f=folgas(m),v=valor(m);
+  document.getElementById('m-fol-inf').innerHTML=`<strong>${s.nome}</strong><br><span style="color:var(--t2)">${s.cargo} · ${f} folga(s) · R$ ${v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`;
+  const d=dec(m);document.getElementById('f-dc').value=d.decisao||'Aguardando decisão';document.getElementById('f-dt').value=d.data||'';document.getElementById('f-ju').value=d.just||'';
+  document.getElementById('m-fol').classList.add('open');
+}
+function salvarDec(){
+  DB.decisoes[editFol]={decisao:document.getElementById('f-dc').value,data:document.getElementById('f-dt').value,just:document.getElementById('f-ju').value.trim()};
+  salvarLS();fechar('m-fol');renderFol();toast('Decisão registrada.');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  COTAS
+// ══════════════════════════════════════════════════════════════
+function renderCotas(){
+  document.getElementById('cotas-ct').innerHTML='<div style="display:grid;gap:16px">'+CHAVES.map(c=>{
+    const co=getCota(c),us=DB.servidores.filter(s=>s.cargo===c&&status(s.matr)==='Validado para folha').length;
+    const disp=Math.max(0,co-us),pct=co>0?Math.min(100,Math.round(us/co*100)):0;
+    const cor=pct>=100?'var(--re)':pct>=80?'var(--am)':'var(--ve)';
+    const sc=pct>=100?'bre':pct>=80?'bam':'bve';
+    const vt=DB.servidores.filter(s=>s.cargo===c&&status(s.matr)==='Validado para folha').reduce((t,s)=>t+valor(s.matr),0);
+    return`<div class="fsec"><h3>${c}</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px"><div class="kpi"><div class="kpi-lbl">Cota EP</div><div class="kpi-val">${co}</div></div><div class="kpi ve"><div class="kpi-lbl">Autorizadas</div><div class="kpi-val">${us}</div></div><div class="kpi"><div class="kpi-lbl">Disponível</div><div class="kpi-val">${disp}</div></div><div class="kpi"><div class="kpi-lbl">Valor</div><div class="kpi-val" style="font-size:14px">R$ ${vt.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div><div class="cb-bg" style="height:12px;margin-bottom:8px"><div class="cb" style="width:${pct}%;background:${cor}"></div></div><div style="display:flex;justify-content:space-between;align-items:center"><span class="badge ${sc}">${pct>=100?'Cota esgotada':pct>=80?'Próxima do limite':'Disponível'}</span><span style="font-size:12px;color:var(--t2)">${pct}% utilizado</span></div></div>`;
+  }).join('')+'</div>';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SINCRONIZAÇÃO (EP → Sheets)
+// ══════════════════════════════════════════════════════════════
+function getDados(){
+  const cfg=DB.config||{};
+  return DB.servidores.filter(s=>folgas(s.matr)>=1).map(s=>{
+    const d=dec(s.matr);
+    return{codigo:cfg.codigo,ep:cfg.nome,matr:s.matr,nome:s.nome,cargo:s.cargo,
+           periodo:cfg.periodo,plantoes:plantoes(s.matr),folgas_adq:folgas(s.matr),
+           data:d.data||'',decisao:d.decisao||'',just:d.just||'',valor:valor(s.matr),status:status(s.matr)};
+  });
+}
+
+async function sincronizar(){
+  const url=getUrl();
+  if(!url){toast('URL não configurada.','er');return;}
+  const lista=getDados();
+  if(!lista.length){toast('Nenhum servidor com folga adquirida para sincronizar.');return;}
+  toast('Enviando para o Google Sheets...','inf');
+  try{
+    const cfg=DB.config||{};
+    const epCod=(SESS.epCodigo||cfg.codigo||'EP').replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
+    await fetch(url,{method:'POST',
+      body:JSON.stringify({acao:'sincronizar',usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token,
+        epCodigo:epCod,linhas:lista}),mode:'no-cors'});
+    const ts=new Date().toLocaleString('pt-BR');
+    if(DB.config){DB.config.ultimoSync=ts;salvarLS();}
+    toast('Dados enviados ao Google Sheets!');
+    document.getElementById('gs-pill-wrap').innerHTML=`<span class="gs-pill gs-ok"><span class="gs-dot"></span>Sincronizado</span>`;
+  }catch(e){toast('Erro ao sincronizar: '+e.message,'er');}
+}
+
+async function testarConexao(){
+  const url=getUrl();
+  if(!url){toast('Configure a URL primeiro.','er');return;}
+  try{
+    const r=await fetch(url+'?acao=ping');
+    const d=await r.json();
+    if(d.ok)toast('Conexão com o Google Sheets ok!');
+    else toast('Resposta inválida do servidor.','er');
+  }catch(e){toast('Erro de conexão. Verifique a URL e a publicação do script.','er');}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ADMIN — PAINEL GERAL
+// ══════════════════════════════════════════════════════════════
+async function carregarAdminDados(){
+  const url=getUrl();if(!url){toast('URL não configurada.','er');return;}
+  document.getElementById('adm-kpi').innerHTML='<div style="color:var(--t2);font-size:13px">Carregando dados dos EPs...</div>';
+  document.getElementById('adm-eps').innerHTML='';
+  try{
+    const r=await fetch(url,{method:'POST',
+      body:JSON.stringify({acao:'admin_dados',usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token})});
+    const d=await r.json();
+    if(!d.ok){toast(d.msg||'Erro ao carregar dados.','er');return;}
+    adminDadosCache=d.dados||{};
+    renderAdminPainel(adminDadosCache);
+  }catch(e){toast('Erro ao buscar dados: '+e.message,'er');}
+}
+function renderAdminPainel(dados){
+  let totalSrv=0,totalFol=0,totalAut=0,totalAg=0,totalVal=0,nEPs=0;
+  Object.values(dados).forEach(linhas=>{
+    nEPs++;
+    linhas.forEach(r=>{
+      totalFol+=(parseInt(r.folgas_adq)||0);
+      if(r.status==='Validado para folha'){totalAut++;totalVal+=(parseFloat(r.valor)||0);}
+      if(r.status==='Aguardando decisão'||r.status==='Aguardando disponibilidade de cota')totalAg++;
+    });
+    totalSrv+=linhas.length;
+  });
+  document.getElementById('adm-kpi').innerHTML=`
+    <div class="kpi"><div class="kpi-lbl">EPs ativos</div><div class="kpi-val">${nEPs}</div><div class="kpi-sub">com dados</div></div>
+    <div class="kpi"><div class="kpi-lbl">Servidores</div><div class="kpi-val">${totalSrv}</div><div class="kpi-sub">total SEAP</div></div>
+    <div class="kpi ve"><div class="kpi-lbl">Folgas adquiridas</div><div class="kpi-val">${totalFol}</div><div class="kpi-sub">total geral</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Aguardando</div><div class="kpi-val">${totalAg}</div><div class="kpi-sub">sem decisão</div></div>
+    <div class="kpi ve"><div class="kpi-lbl">Autorizadas</div><div class="kpi-val">${totalAut}</div><div class="kpi-sub">validadas</div></div>
+    <div class="kpi"><div class="kpi-lbl">Valor total</div><div class="kpi-val" style="font-size:14px">R$ ${totalVal.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div class="kpi-sub">autorizadas</div></div>`;
+
+  let html='';
+  Object.entries(dados).forEach(([aba,linhas])=>{
+    const epNome=linhas.length?linhas[0].ep:aba;
+    const fol=linhas.reduce((s,r)=>s+(parseInt(r.folgas_adq)||0),0);
+    const aut=linhas.filter(r=>r.status==='Validado para folha').length;
+    const ag=linhas.filter(r=>r.status==='Aguardando decisão'||r.status==='Aguardando disponibilidade de cota').length;
+    html+=`<div class="ep-accordion">
+      <div class="ep-acc-hd" onclick="toggleAcc('acc-${aba}')">
+        <h4>${epNome} <span style="font-size:12px;font-weight:400;color:var(--t2)">· ${linhas.length} servidores · ${fol} folgas · ${aut} autorizado(s)</span></h4>
+        <div style="display:flex;gap:6px;align-items:center">${ag>0?`<span class="badge bam">${ag} aguardando</span>`:''}<span style="color:var(--t2);font-size:16px">▾</span></div>
+      </div>
+      <div class="ep-acc-body" id="acc-${aba}">
+        <table><thead><tr><th>Matrícula</th><th>Nome</th><th>Cargo</th><th>Folgas</th><th>Data</th><th>Decisão</th><th>Valor R$</th><th>Status</th></tr></thead>
+        <tbody>${linhas.map(r=>`<tr><td style="font-weight:500">${r.matr}</td><td>${r.nome}</td><td style="font-size:11px">${r.cargo}</td><td><strong>${r.folgas_adq}</strong></td><td style="font-size:11px">${r.data||'—'}</td><td style="font-size:11px">${r.decisao||'—'}</td><td>R$ ${parseFloat(r.valor||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td>${badge(r.status)}</td></tr>`).join('')}</tbody></table>
+      </div></div>`;
+  });
+  document.getElementById('adm-eps').innerHTML=html||'<div class="empty"><h4>Nenhum EP sincronizou ainda</h4><p>Os dados aparecem aqui após cada EP enviar ao Sheets.</p></div>';
+}
+function toggleAcc(id){const el=document.getElementById(id);el.classList.toggle('open');}
+
+// ══════════════════════════════════════════════════════════════
+//  ADMIN — USUÁRIOS
+// ══════════════════════════════════════════════════════════════
+async function carregarUsuarios(){
+  const url=getUrl();if(!url){toast('URL não configurada.','er');return;}
+  try{
+    const r=await fetch(url,{method:'POST',
+      body:JSON.stringify({acao:'admin_usuarios',usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token})});
+    const d=await r.json();
+    if(!d.ok){toast(d.msg,'er');return;}
+    const el=document.getElementById('usr-tb');
+    if(!d.usuarios.length){el.innerHTML=`<tr><td colspan="7"><div class="empty"><h4>Nenhum usuário cadastrado</h4></div></td></tr>`;return;}
+    el.innerHTML=d.usuarios.map(u=>`<tr>
+      <td style="font-weight:500">${u.usuario}</td>
+      <td><span class="badge ${u.perfil==='admin'?'bam':'bve'}">${u.perfil}</span></td>
+      <td>${u.epNome||'—'}</td>
+      <td style="font-size:12px">${u.epCodigo||'—'}</td>
+      <td><span class="badge ${u.ativo?'bve':'bre'}">${u.ativo?'Ativo':'Inativo'}</span></td>
+      <td style="font-size:11px">${u.criado||'—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn bs bsm" onclick="editarUser('${u.usuario}','${u.perfil}','${u.epCodigo}','${u.epNome}',${u.ativo})">Editar</button>
+        ${u.usuario!==SESS.usuario?`<button class="btn bd bsm" style="margin-left:4px" onclick="excluirUser('${u.usuario}')">Excluir</button>`:''}
+      </td></tr>`).join('');
+  }catch(e){toast('Erro: '+e.message,'er');}
+}
+function toggleEpFields(){
+  const ep=document.getElementById('ep-fields');
+  ep.style.display=document.getElementById('u-prf').value==='ep'?'block':'none';
+}
+function abrirNovoUser(){
+  editUser=null;
+  document.getElementById('m-usr-t').textContent='Novo usuário';
+  document.getElementById('u-usr').value='';document.getElementById('u-usr').disabled=false;
+  document.getElementById('u-pwd').value='';document.getElementById('u-prf').value='ep';
+  document.getElementById('u-epc').value='';document.getElementById('u-epn').value='';
+  document.getElementById('u-ativo').checked=true;
+  document.getElementById('ep-fields').style.display='block';
+  document.getElementById('u-edit-pwd').style.display='none';
+  document.getElementById('m-usr').classList.add('open');
+}
+function editarUser(usr,prf,epc,epn,ativo){
+  editUser=usr;
+  document.getElementById('m-usr-t').textContent='Editar usuário';
+  document.getElementById('u-usr').value=usr;document.getElementById('u-usr').disabled=true;
+  document.getElementById('u-pwd').value='';
+  document.getElementById('u-prf').value=prf;
+  document.getElementById('u-epc').value=epc||'';document.getElementById('u-epn').value=epn||'';
+  document.getElementById('u-ativo').checked=ativo;
+  document.getElementById('ep-fields').style.display=prf==='ep'?'block':'none';
+  document.getElementById('u-edit-pwd').style.display='block';
+  document.getElementById('m-usr').classList.add('open');
+}
+async function salvarUser(){
+  const url=getUrl();if(!url){toast('URL não configurada.','er');return;}
+  const usr=document.getElementById('u-usr').value.trim();
+  const pwd=editUser?document.getElementById('u-pwd2').value:document.getElementById('u-pwd').value;
+  const prf=document.getElementById('u-prf').value;
+  const epc=document.getElementById('u-epc').value.trim();
+  const epn=document.getElementById('u-epn').value.trim();
+  const ativo=document.getElementById('u-ativo').checked;
+  if(!usr){toast('Informe o usuário.','er');return;}
+  if(!editUser&&!pwd){toast('Informe a senha.','er');return;}
+  if(!editUser&&pwd.length<6){toast('Senha mínima de 6 caracteres.','er');return;}
+  if(prf==='ep'&&(!epc||!epn)){toast('Informe o código e nome do EP.','er');return;}
+  try{
+    const payload=editUser
+      ?{acao:'editar_usuario',editarUsuario:usr,novoPerfil:prf,novoEpCodigo:epc,novoEpNome:epn,ativo,novaSenha:pwd||undefined}
+      :{acao:'criar_usuario',novoUsuario:usr,novaSenha:pwd,novoPerfil:prf,novoEpCodigo:epc,novoEpNome:epn};
+    const r=await fetch(url,{method:'POST',body:JSON.stringify({...payload,usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token})});
+    const d=await r.json();
+    if(!d.ok){toast(d.msg,'er');return;}
+    fechar('m-usr');carregarUsuarios();toast(d.msg);
+  }catch(e){toast('Erro: '+e.message,'er');}
+}
+async function excluirUser(usr){
+  if(!confirm('Excluir o usuário "'+usr+'"?'))return;
+  const url=getUrl();if(!url)return;
+  try{
+    const r=await fetch(url,{method:'POST',body:JSON.stringify({acao:'excluir_usuario',excluirUsuario:usr,usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token})});
+    const d=await r.json();
+    if(!d.ok){toast(d.msg,'er');return;}
+    carregarUsuarios();toast(d.msg);
+  }catch(e){toast('Erro: '+e.message,'er');}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CONFIGURAÇÕES (EP)
+// ══════════════════════════════════════════════════════════════
+function renderCfg(){
+  const c=DB.config||{};
+  document.getElementById('cf-nm').value=c.nome||SESS.epNome||'';
+  document.getElementById('cf-cd').value=c.codigo||SESS.epCodigo||'';
+  document.getElementById('cf-dr').value=c.diretor||'';
+  document.getElementById('cf-pr').value=c.periodo||'';
+  document.getElementById('cf-pf').value=c.pf||21;
+  document.getElementById('cf-c1').value=c.c1||0;
+  document.getElementById('cf-c2').value=c.c2||0;
+  document.getElementById('cf-c3').value=c.c3||0;
+  const st=document.getElementById('cfg-sync-st');
+  if(st)st.textContent=c.ultimoSync?'Último envio: '+c.ultimoSync:'Nunca sincronizado.';
+}
+function salvarCfg(){
+  const nome=document.getElementById('cf-nm').value.trim();
+  DB.config={...DB.config,nome,codigo:SESS.epCodigo||(DB.config||{}).codigo,
+    diretor:document.getElementById('cf-dr').value.trim(),
+    periodo:document.getElementById('cf-pr').value.trim(),
+    pf:document.getElementById('cf-pf').value||21,
+    c1:document.getElementById('cf-c1').value||0,
+    c2:document.getElementById('cf-c2').value||0,
+    c3:document.getElementById('cf-c3').value||0};
+  salvarLS();document.getElementById('sb-ep').textContent=nome;toast('Configurações salvas.');
+}
+async function trocarSenha(){
+  const url=getUrl();if(!url){toast('URL não configurada.','er');return;}
+  const atual=document.getElementById('pwd-atual').value;
+  const nova=document.getElementById('pwd-nova').value;
+  const conf=document.getElementById('pwd-conf').value;
+  if(!atual||!nova){toast('Preencha todos os campos.','er');return;}
+  if(nova!==conf){toast('As senhas não coincidem.','er');return;}
+  if(nova.length<6){toast('Nova senha mínima de 6 caracteres.','er');return;}
+  try{
+    const r=await fetch(url,{method:'POST',
+      body:JSON.stringify({acao:'trocar_senha',senhaAtual:atual,novaSenha:nova,usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token})});
+    const d=await r.json();
+    if(!d.ok){toast(d.msg,'er');return;}
+    toast('Senha alterada com sucesso. Faça login novamente.');
+    setTimeout(()=>logout(),2000);
+  }catch(e){toast('Erro: '+e.message,'er');}
+}
+function limpar(){if(!confirm('Limpar dados locais?'))return;DB.servidores=[];DB.plantoes=[];DB.decisoes={};salvarLS();toast('Dados locais apagados.');}
+function resetarTudo(){if(!confirm('Resetar tudo? Você será desconectado.'))return;localStorage.clear();sessionStorage.clear();location.reload();}
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GESPEN — Folga Compensatória</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --az:#1E3A8A;--azm:#2563EB;--azcl:#DBEAFE;--aztxt:#1E40AF;
+  --ve:#16A34A;--vecl:#DCFCE7;--vetxt:#15803D;
+  --am:#D97706;--amcl:#FEF3C7;--amtxt:#92400E;
+  --re:#DC2626;--recl:#FEE2E2;--retxt:#991B1B;
+  --g0:#F8FAFC;--g1:#F1F5F9;--g2:#E2E8F0;--g3:#94A3B8;
+  --tx:#0F172A;--t2:#475569;--bo:#CBD5E1;--r:8px;
+  --fn:'Segoe UI',system-ui,sans-serif
+}
+body{font-family:var(--fn);color:var(--tx);background:#F1F5F9;min-height:100vh}
+
+/* ── LOGIN ── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 100%)}
+.login-card{background:#fff;border-radius:16px;padding:40px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo h1{font-size:22px;font-weight:700;color:var(--az);letter-spacing:-.3px}
+.login-logo p{color:var(--t2);font-size:13px;margin-top:4px}
+.login-logo .logo-icon{width:56px;height:56px;background:var(--azcl);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.login-logo .logo-icon svg{width:28px;height:28px;color:var(--azm)}
+.login-err{background:var(--recl);border:1px solid #fca5a5;border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--retxt);margin-bottom:14px;display:none}
+.login-err.show{display:block}
+
+/* ── LAYOUT ── */
+#app{display:none}
+#app.show{display:flex;min-height:100vh}
+#sb{width:230px;background:var(--az);min-height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column}
+.sb-logo{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sb-logo h1{color:#fff;font-size:14px;font-weight:700;letter-spacing:-.2px}
+.sb-logo p{color:rgba(255,255,255,.45);font-size:11px;margin-top:2px}
+.sb-user{padding:12px 16px;margin:8px;background:rgba(0,0,0,.25);border-radius:var(--r)}
+.sb-user-label{color:rgba(255,255,255,.45);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.sb-user-name{color:#fff;font-size:13px;font-weight:500;margin-top:3px}
+.sb-user-ep{color:rgba(255,255,255,.6);font-size:11px;margin-top:2px;word-break:break-word}
+.perfil-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.perfil-admin{background:#f59e0b;color:#78350f}
+.perfil-ep{background:#10b981;color:#064e3b}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 16px;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;border:none;background:none;width:100%;text-align:left;transition:background .15s}
+.ni:hover{background:rgba(255,255,255,.08);color:#fff}
+.ni.active{background:rgba(255,255,255,.16);color:#fff;font-weight:500}
+.ni svg{width:16px;height:16px;flex-shrink:0;opacity:.8}
+.ni.active svg,.ni:hover svg{opacity:1}
+.ni-sep{padding:8px 16px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.3);font-weight:500}
+.sb-ft{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1)}
+.gs-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500;margin-bottom:4px}
+.gs-ok{background:var(--vecl);color:var(--vetxt)}.gs-no{background:var(--g2);color:var(--t2)}
+.gs-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+#main{margin-left:230px;min-height:100vh;flex:1}
+.topbar{background:#fff;border-bottom:1px solid var(--bo);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tb-title{font-size:15px;font-weight:600}
+.tb-acts{display:flex;gap:8px;align-items:center}
+.content{padding:24px}
+.screen{display:none}.screen.active{display:block}
+
+/* ── COMPONENTES ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:24px}
+.kpi{background:#fff;border:1px solid var(--bo);border-radius:12px;padding:16px;border-top:3px solid var(--azm)}
+.kpi.ve{border-top-color:var(--ve)}.kpi.am{border-top-color:var(--am)}.kpi.re{border-top-color:var(--re)}
+.kpi-lbl{font-size:11px;color:var(--t2);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+.kpi-val{font-size:26px;font-weight:700;margin-top:4px;line-height:1}
+.kpi-sub{font-size:11px;color:var(--t2);margin-top:4px}
+.tw{background:#fff;border:1px solid var(--bo);border-radius:12px;overflow:hidden}
+.th2{padding:14px 16px;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.th2 h3{font-size:14px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--g1);color:var(--t2);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:9px 12px;text-align:left;border-bottom:1px solid var(--bo);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--g1);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g0)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.bve{background:var(--vecl);color:var(--vetxt)}.bam{background:var(--amcl);color:var(--amtxt)}
+.bre{background:var(--recl);color:var(--retxt)}.bcz{background:var(--g1);color:var(--t2)}.baz{background:var(--azcl);color:var(--aztxt)}
+.btn{padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px;transition:all .15s;line-height:1}
+.bp{background:var(--azm);color:#fff}.bp:hover{background:#1d4ed8}
+.bs{background:#fff;color:var(--tx);border:1px solid var(--bo)}.bs:hover{background:var(--g1)}
+.bd{background:var(--re);color:#fff}.bd:hover{background:#b91c1c}
+.bg2{background:var(--ve);color:#fff}.bg2:hover{background:#15803d}
+.bsm{padding:4px 10px;font-size:12px}
+.bic{padding:6px;width:32px;height:32px;justify-content:center}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:12px;font-weight:500;color:var(--t2)}
+.fg input,.fg select,.fg textarea{padding:8px 10px;border:1px solid var(--bo);border-radius:var(--r);font-size:13px;font-family:var(--fn);color:var(--tx);background:#fff;transition:border .15s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--azm)}
+.fg textarea{resize:vertical;min-height:70px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.fsec{background:#fff;border:1px solid var(--bo);border-radius:12px;padding:20px;margin-bottom:16px}
+.fsec h3{font-size:14px;font-weight:600;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bo)}
+.fa{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.mb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.mb.open{display:flex}
+.mo{background:#fff;border-radius:12px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto}
+.mh{padding:16px 20px;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between}
+.mh h3{font-size:15px;font-weight:600}
+.mb2{padding:20px}
+.mf{padding:14px 20px;border-top:1px solid var(--bo);display:flex;justify-content:flex-end;gap:8px}
+.sb2{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--g1);border-radius:var(--r);margin-bottom:14px}
+.sb2 svg{width:16px;height:16px;color:var(--t2);flex-shrink:0}
+.sb2 input{border:none;background:transparent;font-size:13px;color:var(--tx);flex:1;outline:none}
+.empty{text-align:center;padding:48px 24px;color:var(--t2)}
+.empty svg{width:40px;height:40px;margin:0 auto 12px;opacity:.3;display:block}
+.empty h4{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:6px}
+#toast{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.ti{background:#fff;border:1px solid var(--bo);border-radius:var(--r);padding:10px 14px;font-size:13px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);animation:fi .2s;max-width:340px}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tok{border-left:3px solid var(--ve)}.ter{border-left:3px solid var(--re)}.tinf{border-left:3px solid var(--azm)}
+
+/* ── COTAS ── */
+.cc{background:#fff;border:1px solid var(--bo);border-radius:12px;padding:16px;margin-bottom:12px}
+.cc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cc-nm{font-size:13px;font-weight:500}.cc-ns{font-size:12px;color:var(--t2)}
+.cb-bg{height:8px;background:var(--g2);border-radius:4px;overflow:hidden}
+.cb{height:100%;border-radius:4px;transition:width .3s}
+
+/* ── ADMIN PAINEL ── */
+.ep-accordion{background:#fff;border:1px solid var(--bo);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.ep-acc-hd{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:var(--g1);border-bottom:1px solid var(--bo)}
+.ep-acc-hd:hover{background:var(--g2)}
+.ep-acc-hd h4{font-size:14px;font-weight:600}
+.ep-acc-body{display:none;overflow-x:auto}
+.ep-acc-body.open{display:block}
+.ep-acc-body table{min-width:700px}
+
+/* ── CONFIG SHEETS ── */
+.url-row{display:flex;gap:8px;margin-top:8px}
+.url-row input{flex:1;padding:8px 12px;border:1px solid var(--bo);border-radius:var(--r);font-size:13px;font-family:var(--fn)}
+.url-row input:focus{outline:none;border-color:var(--azm)}
+.code-box{background:#1e293b;border-radius:var(--r);padding:14px;font-size:11px;color:#e2e8f0;font-family:monospace;line-height:1.7;overflow-x:auto;white-space:pre;margin-top:8px;max-height:200px;overflow-y:auto}
+.step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.step-n{width:26px;height:26px;border-radius:50%;background:var(--azm);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-b .step-t{font-size:13px;font-weight:500;margin-bottom:3px}
+.step-b .step-d{font-size:12px;color:var(--t2);line-height:1.6}
+
+.info-box{background:var(--azcl);border:1px solid #93c5fd;border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--aztxt);margin-bottom:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- ══════════════ TELA DE LOGIN ══════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h1>GESPEN</h1>
+      <p>Folga Compensatória · SEAP-MA</p>
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="fg"><label>Usuário</label><input id="l-usr" type="text" placeholder="Digite seu usuário" autocomplete="username"/></div>
+      <div class="fg"><label>Senha</label>
+        <div style="position:relative">
+          <input id="l-pwd" type="password" placeholder="Digite sua senha" autocomplete="current-password" style="width:100%;padding-right:40px"/>
+          <button onclick="toggleSenha('l-pwd',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;color:var(--t2);display:flex;align-items:center">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn bp" id="btn-login" onclick="fazerLogin()" style="width:100%;justify-content:center;padding:10px">Entrar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="app">
+  <div id="sb">
+    <div class="sb-logo"><h1>GESPEN</h1><p>Folga Compensatória · SEAP-MA</p></div>
+    <div class="sb-user">
+      <div class="sb-user-label">Usuário conectado</div>
+      <div class="sb-user-name" id="sb-usr">—</div>
+      <div class="sb-user-ep" id="sb-ep">—</div>
+      <span class="perfil-badge" id="sb-perfil-badge">—</span>
+    </div>
+    <nav class="sb-nav" id="sb-nav">
+      <!-- gerado dinamicamente -->
+    </nav>
+    <div class="sb-ft">
+      <div id="gs-pill-wrap"><span class="gs-pill gs-no"><span class="gs-dot"></span>Sheets conectado</span></div>
+      <p style="color:rgba(255,255,255,.3);font-size:10px;margin-top:3px">GESPEN/SAMOD · SEAP-MA</p>
+    </div>
+  </div>
+
+  <div id="main">
+    <div class="topbar">
+      <span class="tb-title" id="tb-title">Dashboard</span>
+      <div class="tb-acts">
+        <button class="btn bs bsm" id="btn-sync" style="display:none" onclick="sincronizar()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+          Sincronizar
+        </button>
+        <button class="btn bs bsm" onclick="logout()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sair
+        </button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD EP -->
+      <div id="screen-dashboard" class="screen">
+        <div class="kpi-grid" id="kpi-grid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--t2)">Cotas por cargo</div><div id="dash-cotas"></div></div>
+          <div><div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--t2)">Situação</div><div id="dash-sit" class="tw"></div></div>
+        </div>
+      </div>
+
+      <!-- SERVIDORES -->
+      <div id="screen-servidores" class="screen">
+        <div class="sb2"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="srv-q" type="text" placeholder="Buscar matrícula ou nome..." oninput="renderSrv()"></div>
+        <div class="tw"><div class="th2"><h3>Servidores cadastrados</h3><button class="btn bp bsm" onclick="abrirSrv()">+ Adicionar</button></div>
+        <table><thead><tr><th>Matrícula</th><th>Nome</th><th>Cargo</th><th>Situação</th><th>Plantões</th><th>Folgas adq.</th><th></th></tr></thead><tbody id="srv-tb"></tbody></table></div>
+      </div>
+
+      <!-- PLANTÕES -->
+      <div id="screen-plantoes" class="screen">
+        <div class="sb2"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="plt-q" type="text" placeholder="Buscar matrícula ou nome..." oninput="renderPlt()"></div>
+        <div class="tw"><div class="th2"><h3>Registro de plantões</h3><button class="btn bp bsm" onclick="abrirPlt()">+ Registrar</button></div>
+        <table><thead><tr><th>Matrícula</th><th>Nome</th><th>Cargo</th><th>Período</th><th>Plantões</th><th>Folgas</th><th></th></tr></thead><tbody id="plt-tb"></tbody></table></div>
+      </div>
+
+      <!-- FOLGAS -->
+      <div id="screen-folgas" class="screen">
+        <div class="sb2"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="fol-q" type="text" placeholder="Buscar matrícula ou nome..." oninput="renderFol()"></div>
+        <div class="tw"><div class="th2"><h3>Folgas adquiridas — decisão da Diretoria</h3><span style="font-size:12px;color:var(--t2)">Clique em "Decidir" para registrar</span></div>
+        <table><thead><tr><th>Matrícula</th><th>Nome</th><th>Cargo</th><th>Plantões</th><th>Folgas</th><th>Apto?</th><th>Data</th><th>Decisão</th><th>Status</th><th></th></tr></thead><tbody id="fol-tb"></tbody></table></div>
+      </div>
+
+      <!-- COTAS -->
+      <div id="screen-cotas" class="screen"><div id="cotas-ct"></div></div>
+
+      <!-- ADMIN: PAINEL GERAL -->
+      <div id="screen-admin-painel" class="screen">
+        <div class="fsec" style="margin-bottom:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bo)">
+            <h3 style="margin:0;padding:0;border:none">Visão geral — todos os EPs</h3>
+            <button class="btn bg2 bsm" onclick="carregarAdminDados()">Atualizar dados</button>
+          </div>
+          <div class="kpi-grid" id="adm-kpi"></div>
+        </div>
+        <div id="adm-eps" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ADMIN: USUÁRIOS -->
+      <div id="screen-admin-usuarios" class="screen">
+        <div class="tw">
+          <div class="th2"><h3>Gerenciar usuários</h3><button class="btn bp bsm" onclick="abrirNovoUser()">+ Novo usuário</button></div>
+          <table><thead><tr><th>Usuário</th><th>Perfil</th><th>EP</th><th>Código</th><th>Status</th><th>Criado em</th><th></th></tr></thead>
+          <tbody id="usr-tb"></tbody></table>
+        </div>
+      </div>
+
+      <!-- CONFIGURAÇÕES / SHEETS -->
+      <div id="screen-config" class="screen">
+        <div class="fsec">
+          <h3>Dados do estabelecimento penal</h3>
+          <div class="fgrid">
+            <div class="fg"><label>Nome</label><input id="cf-nm" type="text"/></div>
+            <div class="fg"><label>Código</label><input id="cf-cd" type="text" readonly style="background:var(--g1)"/></div>
+            <div class="fg"><label>Diretor(a)</label><input id="cf-dr" type="text"/></div>
+            <div class="fg"><label>Período de apuração</label><input id="cf-pr" type="text"/></div>
+            <div class="fg"><label>Plantões por folga</label><input id="cf-pf" type="number" min="1"/></div>
+          </div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bo)">
+            <p style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:12px">Cotas por cargo</p>
+            <div class="fgrid">
+              <div class="fg"><label>Inspetor de Polícia Penal</label><input id="cf-c1" type="number" min="0" readonly style="background:var(--g1)"/></div>
+              <div class="fg"><label>Agente Penitenciário Temporário</label><input id="cf-c2" type="number" min="0" readonly style="background:var(--g1)"/></div>
+              <div class="fg"><label>Auxiliar de Segurança Penitenciário</label><input id="cf-c3" type="number" min="0" readonly style="background:var(--g1)"/></div>
+            </div>
+            <p style="font-size:11px;color:var(--t2);margin-top:8px">Cotas definidas pelo planejamento GESPEN/SAMOD. Não editáveis pelo EP.</p>
+          </div>
+          <div class="fa"><button class="btn bp" onclick="salvarCfg()">Salvar alterações</button></div>
+        </div>
+        <div class="fsec">
+          <h3>Alterar minha senha</h3>
+          <div class="fgrid">
+            <div class="fg"><label>Senha atual</label><input id="pwd-atual" type="password"/></div>
+            <div class="fg"><label>Nova senha</label><input id="pwd-nova" type="password"/></div>
+            <div class="fg"><label>Confirmar nova senha</label><input id="pwd-conf" type="password"/></div>
+          </div>
+          <div class="fa"><button class="btn bp" onclick="trocarSenha()">Alterar senha</button></div>
+        </div>
+        <div class="fsec">
+          <h3>Google Sheets</h3>
+          <p style="font-size:12px;color:var(--t2);margin-bottom:12px">A URL do Apps Script está configurada diretamente no sistema pelo administrador técnico.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn bg2" onclick="sincronizar()">Sincronizar agora</button>
+            <button class="btn bs bsm" onclick="testarConexao()">Testar conexão</button>
+          </div>
+          <div id="cfg-sync-st" style="margin-top:10px;font-size:12px;color:var(--t2)"></div>
+        </div>
+        <div class="fsec" style="border-left:3px solid var(--re)">
+          <h3 style="color:var(--re)">Zona de perigo</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button class="btn bd bsm" onclick="limpar()">Limpar dados locais (manter config)</button>
+            <button class="btn bd bsm" onclick="resetarTudo()">Resetar tudo</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SERVIDOR -->
+<div id="m-srv" class="mb"><div class="mo">
+  <div class="mh"><h3 id="m-srv-t">Adicionar servidor</h3><button class="btn bic bs" onclick="fechar('m-srv')">✕</button></div>
+  <div class="mb2"><div class="fgrid" style="grid-template-columns:1fr;gap:12px">
+    <div class="fg"><label>Matrícula *</label><input id="s-mt" type="text"/></div>
+    <div class="fg"><label>Nome completo *</label><input id="s-nm" type="text"/></div>
+    <div class="fg"><label>Cargo *</label><select id="s-cr"><option value="">Selecionar cargo</option><option value="Inspetor de Polícia Penal">Inspetor de Polícia Penal</option><option value="Agente Penitenciário Temporário">Agente Penitenciário Temporário</option><option value="Auxiliar de Segurança Penitenciário">Auxiliar de Segurança Penitenciário</option></select></div>
+  </div></div>
+  <div class="mf"><button class="btn bs" onclick="fechar('m-srv')">Cancelar</button><button class="btn bp" onclick="salvarSrv()">Salvar</button></div>
+</div></div>
+
+<!-- MODAL PLANTÃO -->
+<div id="m-plt" class="mb"><div class="mo">
+  <div class="mh"><h3>Registrar plantões</h3><button class="btn bic bs" onclick="fechar('m-plt')">✕</button></div>
+  <div class="mb2"><div class="fgrid" style="grid-template-columns:1fr;gap:12px">
+    <div class="fg"><label>Servidor *</label><select id="p-sv"><option value="">Selecionar</option></select></div>
+    <div class="fg"><label>Período *</label><input id="p-pr" type="text"/></div>
+    <div class="fg"><label>Quantidade de plantões de 12h *</label><input id="p-qt" type="number" min="1" oninput="prevF()"/></div>
+    <div id="p-pv" style="display:none;background:var(--azcl);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--aztxt)">= <strong id="p-fp">0</strong> folga(s) adquirida(s)</div>
+  </div></div>
+  <div class="mf"><button class="btn bs" onclick="fechar('m-plt')">Cancelar</button><button class="btn bp" onclick="salvarPlt()">Registrar</button></div>
+</div></div>
+
+<!-- MODAL DECISÃO -->
+<div id="m-fol" class="mb"><div class="mo">
+  <div class="mh"><h3>Decisão da Diretoria</h3><button class="btn bic bs" onclick="fechar('m-fol')">✕</button></div>
+  <div class="mb2">
+    <div id="m-fol-inf" style="background:var(--g1);border-radius:var(--r);padding:12px;margin-bottom:16px;font-size:13px"></div>
+    <div class="fgrid" style="grid-template-columns:1fr;gap:12px">
+      <div class="fg"><label>Decisão</label><select id="f-dc"><option value="Aguardando decisão">Aguardando decisão</option><option value="Compra autorizada">Compra autorizada</option><option value="Não comprar">Não comprar</option></select></div>
+      <div class="fg"><label>Data da folga</label><input id="f-dt" type="date"/></div>
+      <div class="fg"><label>Justificativa</label><textarea id="f-ju" placeholder="Justificativa da decisão..."></textarea></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="fechar('m-fol')">Cancelar</button><button class="btn bp" onclick="salvarDec()">Salvar decisão</button></div>
+</div></div>
+
+<!-- MODAL USUÁRIO (admin) -->
+<div id="m-usr" class="mb"><div class="mo">
+  <div class="mh"><h3 id="m-usr-t">Novo usuário</h3><button class="btn bic bs" onclick="fechar('m-usr')">✕</button></div>
+  <div class="mb2"><div class="fgrid" style="grid-template-columns:1fr;gap:12px">
+    <div class="fg"><label>Usuário (login) *</label><input id="u-usr" type="text" placeholder="Ex: ep001"/></div>
+    <div class="fg"><label>Senha *</label><input id="u-pwd" type="password" placeholder="Mínimo 6 caracteres"/></div>
+    <div class="fg"><label>Perfil *</label>
+      <select id="u-prf" onchange="toggleEpFields()">
+        <option value="ep">EP — Estabelecimento Penal</option>
+        <option value="admin">Admin — Gestão Central</option>
+      </select>
+    </div>
+    <div id="ep-fields">
+      <div class="fgrid">
+        <div class="fg"><label>Código do EP *</label><input id="u-epc" type="text" placeholder="Ex: EP-001"/></div>
+        <div class="fg"><label>Nome do EP *</label><input id="u-epn" type="text" placeholder="Nome completo do EP"/></div>
+      </div>
+    </div>
+    <div id="u-edit-pwd" style="display:none">
+      <div class="fg"><label>Nova senha (deixe em branco para manter)</label><input id="u-pwd2" type="password"/></div>
+    </div>
+    <div class="fg">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="u-ativo" checked> Usuário ativo</label>
+    </div>
+  </div></div>
+  <div class="mf"><button class="btn bs" onclick="fechar('m-usr')">Cancelar</button><button class="btn bp" onclick="salvarUser()">Salvar usuário</button></div>
+</div></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  ESTADO
+// ══════════════════════════════════════════════════════════════
+const CARGOS={'Inspetor de Polícia Penal':691.10,'Agente Penitenciário Temporário':291.57,'Auxiliar de Segurança Penitenciário':145.79};
+const CHAVES=['Inspetor de Polícia Penal','Agente Penitenciário Temporário','Auxiliar de Segurança Penitenciário'];
+
+const EPS_CADASTRADOS = [
+  {nome:"CAAE de São Luís",codigo:"CAAE-SL",c1:8,c2:0,c3:11},
+  {nome:"COCT de São Luís",codigo:"COCT-SL",c1:2,c2:20,c3:20},
+  {nome:"Grupo Especial de Operação Penitenciárias - GEOP",codigo:"GEOP",c1:37,c2:0,c3:0},
+  {nome:"Grupo Tático de Escolta - GTE",codigo:"GTE",c1:23,c2:70,c3:14},
+  {nome:"Penitenciária Regional de Bacabal",codigo:"PR-BACABAL",c1:8,c2:29,c3:49},
+  {nome:"Penitenciária Regional de Brejo",codigo:"PR-BREJO",c1:5,c2:32,c3:40},
+  {nome:"Penitenciária Regional de Governador Nunes Freire",codigo:"PR-GNF",c1:1,c2:34,c3:40},
+  {nome:"Penitenciária Regional de Imperatriz",codigo:"PR-IMP",c1:17,c2:14,c3:49},
+  {nome:"Penitenciária Regional de Pedreiras",codigo:"PR-PED",c1:8,c2:23,c3:45},
+  {nome:"Penitenciária Regional de Pinheiro",codigo:"PR-PINH",c1:1,c2:33,c3:57},
+  {nome:"Penitenciária Regional de São Luís",codigo:"PR-SL",c1:2,c2:51,c3:51},
+  {nome:"Penitenciária Regional de Timon",codigo:"PR-TIMON",c1:30,c2:13,c3:47},
+  {nome:"Supervisão de Segurança Interna - SSI",codigo:"SSI",c1:12,c2:360,c3:297},
+  {nome:"UPR de Açailândia",codigo:"UPR-ACA",c1:1,c2:19,c3:39},
+  {nome:"UPR de Balsas",codigo:"UPR-BAL",c1:0,c2:18,c3:32},
+  {nome:"UPR de Barra do Corda",codigo:"UPR-BDC",c1:2,c2:10,c3:16},
+  {nome:"UPR de Caxias",codigo:"UPR-CAX",c1:16,c2:7,c3:43},
+  {nome:"UPR de Chapadinha",codigo:"UPR-CHA",c1:8,c2:16,c3:39},
+  {nome:"UPR de Codó",codigo:"UPR-COD",c1:7,c2:11,c3:38},
+  {nome:"UPR de Colinas",codigo:"UPR-COL",c1:0,c2:17,c3:21},
+  {nome:"UPR de Coroatá",codigo:"UPR-COR",c1:6,c2:21,c3:42},
+  {nome:"UPR de Davinópolis",codigo:"UPR-DAV",c1:8,c2:4,c3:29},
+  {nome:"UPR de Godofredo Viana",codigo:"UPR-GOD",c1:1,c2:9,c3:20},
+  {nome:"UPR de Grajaú",codigo:"UPR-GRA",c1:1,c2:8,c3:17},
+  {nome:"UPR de Imperatriz",codigo:"UPR-IMP",c1:5,c2:30,c3:54},
+  {nome:"UPR de Itapecuru-Mirim",codigo:"UPR-ITA",c1:2,c2:12,c3:31},
+  {nome:"UPR de Pinheiro",codigo:"UPR-PINH",c1:1,c2:33,c3:57},
+  {nome:"UPR de Porto Franco",codigo:"UPR-PF",c1:3,c2:8,c3:19},
+  {nome:"UPR de Presidente Dutra",codigo:"UPR-PDU",c1:2,c2:9,c3:18},
+  {nome:"UPR de Rosário",codigo:"UPR-ROS",c1:7,c2:8,c3:29},
+  {nome:"UPR de Santa Inês",codigo:"UPR-SI",c1:3,c2:17,c3:32},
+  {nome:"UPR de São João dos Patos",codigo:"UPR-SJP",c1:4,c2:6,c3:19},
+  {nome:"UPR de São Luís 1",codigo:"UPR-SL1",c1:6,c2:32,c3:38},
+  {nome:"UPR de São Luís 2",codigo:"UPR-SL2",c1:0,c2:46,c3:53},
+  {nome:"UPR de São Luís 3",codigo:"UPR-SL3",c1:1,c2:31,c3:29},
+  {nome:"UPR de São Luís 4",codigo:"UPR-SL4",c1:5,c2:38,c3:15},
+  {nome:"UPR de São Luís 5",codigo:"UPR-SL5",c1:3,c2:31,c3:18},
+  {nome:"UPR de São Luís 6",codigo:"UPR-SL6",c1:0,c2:36,c3:36},
+  {nome:"UPR de São Luís 7",codigo:"UPR-SL7",c1:0,c2:20,c3:42},
+  {nome:"UPR de Segurança Máxima",codigo:"UPR-SM",c1:2,c2:50,c3:42},
+  {nome:"UPR de Timon",codigo:"UPR-TIM",c1:24,c2:12,c3:41},
+  {nome:"UPR de Viana",codigo:"UPR-VIA",c1:2,c2:12,c3:31},
+  {nome:"UPR de Zé Doca",codigo:"UPR-ZD",c1:1,c2:10,c3:26},
+  {nome:"UPR do Anil",codigo:"UPR-ANIL",c1:18,c2:8,c3:22},
+  {nome:"UPR do Monte Castelo",codigo:"UPR-MC",c1:14,c2:5,c3:17},
+  {nome:"UPR do Olho D'Água",codigo:"UPR-ODA",c1:19,c2:18,c3:31},
+  {nome:"UPR do Paço do Lumiar",codigo:"UPR-PDL",c1:13,c2:0,c3:17},
+  {nome:"UPR Feminina",codigo:"UPR-FEM",c1:7,c2:25,c3:57},
+  {nome:"UPRS Feminina de Carolina",codigo:"UPR-FCA",c1:0,c2:8,c3:18},
+  {nome:"UPRS Feminina de Timon",codigo:"UPR-FTI",c1:6,c2:4,c3:17},
+];
+
+function epPorCodigo(cod){return EPS_CADASTRADOS.find(e=>e.codigo===cod)||null;}
+
+const LS_KEY='gespen_v4';
+
+let DB={config:null,servidores:[],plantoes:[],decisoes:{}};
+let SESS={usuario:null,perfil:null,epCodigo:null,epNome:null,token:null};
+let editSrv=null,editFol=null,editUser=null;
+let adminDadosCache={};
+
+function lerLS(){const s=localStorage.getItem(LS_KEY);if(s)DB=JSON.parse(s);}
+function salvarLS(){localStorage.setItem(LS_KEY,JSON.stringify(DB));}
+function getUrl(){return 'https://script.google.com/macros/s/AKfycbyBXQZAGTyORLnRRGj2QA5b3r-uKx3aH4ah8a5pcLa8LULHuCc_ru8ZWn2w1YGO1tBo/exec';}
+
+// ══════════════════════════════════════════════════════════════
+//  UTILITÁRIOS
+// ══════════════════════════════════════════════════════════════
+function toast(msg,t='ok'){
+  const el=document.createElement('div');el.className='ti t'+t;el.textContent=msg;
+  document.getElementById('toast').appendChild(el);setTimeout(()=>el.remove(),3500);
+}
+function fechar(id){document.getElementById(id).classList.remove('open');editSrv=null;editFol=null;editUser=null;}
+document.querySelectorAll('.mb').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+function toggleSenha(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';}
+
+async function api(dados){
+  const url=getUrl();
+  if(!url)throw new Error('URL não configurada.');
+  const r=await fetch(url,{method:'POST',body:JSON.stringify({...dados,usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token}),mode:'no-cors'});
+  // no-cors retorna resposta opaca; tratamos como sucesso e checamos localmente
+  return{ok:true};
+}
+async function apiLer(dados){
+  const url=getUrl();
+  if(!url)throw new Error('URL não configurada.');
+  const r=await fetch(url,{method:'POST',body:JSON.stringify({...dados,usuario:SESS.usuario,perfil:SESS.perfil,token:SESS.token})});
+  return r.json();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  LOGIN / LOGOUT
+// ══════════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  lerLS();
+  const sessRaw=sessionStorage.getItem('gespen_sess');
+  if(sessRaw){SESS=JSON.parse(sessRaw);entrar();}
+});
+
+
+async function fazerLogin(){
+  const usr=document.getElementById('l-usr').value.trim();
+  const pwd=document.getElementById('l-pwd').value;
+  const err=document.getElementById('login-err');
+  if(!usr||!pwd){err.textContent='Preencha usuário e senha.';err.classList.add('show');return;}
+  const btn=document.getElementById('btn-login');
+  btn.textContent='Entrando...';btn.disabled=true;
+  err.classList.remove('show');
+  try{
+    const url=getUrl();
+    if(!url){err.textContent='Configure a URL do Apps Script primeiro.';err.classList.add('show');btn.textContent='Entrar';btn.disabled=false;return;}
+    const r=await fetch(url,{method:'POST',
+      body:JSON.stringify({acao:'login',usuario:usr,senha:pwd})});
+    const d=await r.json();
+    if(!d.ok){err.textContent=d.msg||'Usuário ou senha inválidos.';err.classList.add('show');}
+    else{
+      SESS={usuario:d.usuario,perfil:d.perfil,epCodigo:d.epCodigo,epNome:d.epNome,token:d.token};
+      sessionStorage.setItem('gespen_sess',JSON.stringify(SESS));
+      // Se EP, garante config local
+      if(SESS.perfil==='ep'){
+        const epInfo=epPorCodigo(d.epCodigo);
+        if(!DB.config){
+          DB.config={
+            nome:d.epNome,codigo:d.epCodigo,pf:21,periodo:'',
+            c1:epInfo?epInfo.c1:0,
+            c2:epInfo?epInfo.c2:0,
+            c3:epInfo?epInfo.c3:0
+          };
+          salvarLS();
+        } else if(epInfo){
+          // Atualiza cotas sempre que fizer login (garante dados atualizados)
+          DB.config.c1=epInfo.c1;DB.config.c2=epInfo.c2;DB.config.c3=epInfo.c3;
+          DB.config.nome=d.epNome;DB.config.codigo=d.epCodigo;
+          salvarLS();
+        }
       }
       entrar();
     }
